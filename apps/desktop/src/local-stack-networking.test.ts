@@ -38,11 +38,14 @@ describe("managed stack address", () => {
     expect(await readStackWebUrl(dir, DEFAULT_LOCAL_WEB_URL)).toBe(DEFAULT_LOCAL_WEB_URL);
   });
 
-  it("does not follow a symlink to an address file", async () => {
-    await writeFile(path.join(dir, "other"), "http://127.0.0.1:49152");
-    await symlink(path.join(dir, "other"), path.join(dir, STACK_WEB_URL_FILE));
-    expect(await readStackWebUrl(dir, DEFAULT_LOCAL_WEB_URL)).toBe(DEFAULT_LOCAL_WEB_URL);
-  });
+  it.skipIf(process.platform === "win32")(
+    "does not follow a symlink to an address file",
+    async () => {
+      await writeFile(path.join(dir, "other"), "http://127.0.0.1:49152");
+      await symlink(path.join(dir, "other"), path.join(dir, STACK_WEB_URL_FILE));
+      expect(await readStackWebUrl(dir, DEFAULT_LOCAL_WEB_URL)).toBe(DEFAULT_LOCAL_WEB_URL);
+    },
+  );
 
   it("allocates an unprivileged local port", async () => {
     const port = await allocateLoopbackPort();
