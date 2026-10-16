@@ -1243,7 +1243,7 @@ export function ShellPage() {
       .catch(() => {
         if (cancelled) return;
         setBootstrapMe(null);
-        void refreshBots(true);
+        void refreshBots(true).catch(() => undefined);
       });
     let refreshTimer: number | undefined;
     const refreshVisibleBots = () => {

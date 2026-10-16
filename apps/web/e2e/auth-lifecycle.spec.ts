@@ -122,8 +122,11 @@ test("logout protects bot deep links and sign-in restores the session", async ({
   ).toHaveCount(0);
   await captureScreenshot(page, testInfo, "36-account-menu");
 
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page.getByRole("heading", { name: "Sign in to Rakazo" })).toBeVisible();
+  expect(pageErrors).toEqual([]);
   await page.goto("/");
   await expect(page.locator('[data-rakazo-surface="welcome"]')).toBeVisible();
   await expect(page.getByText(/Your team of always-on agents/)).toBeVisible();
